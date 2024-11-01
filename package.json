@@ -1,12 +1,13 @@
 {
-  "name": "87",
-  "description": "Starting template for develop Lit Component",
+  "name": "Lit Simple Todos",
+  "description": "Simple Todos Component developed using LIT + Tailwind",
   "version": "1.0.0",
   "main": "./src/index.ts",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "push": "git add . && git commit -m \"update\" && git push"
   },
   "author": "Mr.Manit Treeprapankit",
   "license": "MIT",
