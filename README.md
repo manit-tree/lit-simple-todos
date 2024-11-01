@@ -1,12 +1,12 @@
-# Template Vite + Lit + Tailwind
+# Lit Simple Todos
 
-Starter template for custom element development using Vite + Lit + Tailwind
+Simple Todos Component developed using LIT + Tailwind
 
 ### src/index.ts
 
 ```ts
 import {LitElement, unsafeCSS, html} from 'lit';
-import {customElement, property} from 'lit/decorators.js';
+import {customElement, property, state, query} from 'lit/decorators.js';
 import styles from './style.css?inline';
 
 @customElement('my-element')
@@ -14,24 +14,134 @@ export class MyElement extends LitElement {
     @property()
     version = '1.0.0';
 
+    id = 1;
+
+    @state()
+    private _items = [
+        { id: this.id++, text: 'Start Lit tutorial', completed: true },
+        { id: this.id++, text: 'Make to-do list', completed: false },
+        { id: this.id++, text: 'Learn Python', completed: false }
+    ]
+
+    handleClear = (evt) => {
+        this._items = [];
+    }
+
+    handleReset = (evt) => {
+        this._items = [
+            { id: this.id++, text: 'Start Lit tutorial', completed: true },
+            { id: this.id++, text: 'Make to-do list', completed: false },            
+            { id: this.id++, text: 'Learn Python', completed: false }
+        ]        
+    }
+
+    handleRemoveItem = (evt) => {
+        evt.preventDefault();
+
+        let el = evt.target;
+        let id = el.closest('li')?.getAttribute('data-id');
+
+        if (id) {
+            this._items = this._items.filter(item => {
+                return item.id != id;
+            })
+        }
+    }
+
+    handleKeyDown = (evt) => {
+        if (evt.key == 'Enter') {
+            let value = this.input.value.trim();
+
+            if (value) {
+                this._items =  [...this._items, {id: this.id++, text: value, completed: false}];
+                this.input.value = '';
+                this.input.focus();
+            }
+        }
+    }
+
+    @query('#newitem')
+    input!: HTMLInputElement;
+
     render() {
         return html`
-            <p><strong>Lit Component</strong> v ${this.version}</p>
+            <div class="root dark">                
+                <h1>Simple Todos <span>${this.version}</span></h1>
+                <div class="input-container">
+                    <input id="newitem" aria-label="New item" placeholder="Todo Item..." @keydown=${this.handleKeyDown} />                    
+                </div>
+                <ul>
+                      ${this._items.map((item) =>
+                        html`<li data-id="${item.id}">${item.text} <a href="#" @click=${this.handleRemoveItem}>X</a></li>`
+                      )}
+                </ul>
+                <div class="button-container">    
+                    <button @click=${this.handleClear}>Clear</button>
+                    <button @click=${this.handleReset}>Reset</button>
+                </div>
+            </div>
         `;
+    }
+
+    updated(changedProperties: Map<string, any>) {
+        this.input.focus();
     }
 
     static get styles() {
         return unsafeCSS(styles);
     }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'my-element': MyElement
+  }
+}
 ```
 
 ### src/style.css
 
 ```css
-p {
-    strong {
-        @apply text-red-500;
+div {
+    h1 {
+        @apply text-center font-normal mb-8;
+
+        span {
+            @apply text-base text-blue-500;
+        }
+    }
+
+    .input-container {
+        @apply space-y-3 mb-6;
+
+        input {
+            &:focus-visible {
+                outline: 0;
+            }
+
+            @apply box-border py-3 px-4 block w-full border-gray-200 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500;
+        }
+    }
+
+    ul {
+        @apply p-0 marker:text-blue-600 list-disc space-y-2 text-sm text-gray-600 dark:text-neutral-400;
+
+        li {
+            @apply flex flex-row justify-between py-1 border-b  border-red-200 dark:border-neutral-800;
+
+            a {
+                @apply no-underline text-blue-500 active:text-blue-500;
+            }
+        }
+    }
+
+    .button-container {
+        @apply flex flex-row justify-center gap-3 mt-5;
+
+        button {
+            cursor: pointer;
+            @apply min-w-[100px] flex justify-center py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none;
+        }        
     }
 }
 ```
@@ -40,8 +150,8 @@ p {
 
 ```json
 {
-  "name": "86",
-  "description": "Starting template for develop Lit Component",
+  "name": "Lit Simple Todos",
+  "description": "Simple Todos Component developed using LIT + Tailwind",
   "version": "1.0.0",
   "main": "./src/index.ts",
   "type": "module",
@@ -86,7 +196,9 @@ p {
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+
+    "strictNullChecks": true
   },
   "include": ["src"]
 }
@@ -133,6 +245,7 @@ export default defineConfig({
 /** @type {import('tailwindcss').Config} */
 export default {
   mode: 'jit',
+  darkMode: 'selector',
   content:[
     "./index.html",
     "./src/**/*.{html,js,ts}"
