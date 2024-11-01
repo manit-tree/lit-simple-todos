@@ -1,0 +1,42 @@
+div {
+    h1 {
+        @apply text-center font-normal mb-8;
+
+        span {
+            @apply text-base text-blue-500;
+        }
+    }
+
+    .input-container {
+        @apply space-y-3 mb-6;
+
+        input {
+            &:focus-visible {
+                outline: 0;
+            }
+
+            @apply box-border py-3 px-4 block w-full border-gray-200 rounded-lg text-sm disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500;
+        }
+    }
+
+    ul {
+        @apply p-0 marker:text-blue-600 list-disc space-y-2 text-sm text-gray-600 dark:text-neutral-400;
+
+        li {
+            @apply flex flex-row justify-between py-1 border-b  border-red-200 dark:border-neutral-800;
+
+            a {
+                @apply no-underline text-blue-500 active:text-blue-500;
+            }
+        }
+    }
+
+    .button-container {
+        @apply flex flex-row justify-center gap-3 mt-5;
+
+        button {
+            cursor: pointer;
+            @apply min-w-[100px] flex justify-center py-3 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none;
+        }        
+    }
+}
