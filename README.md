@@ -2,6 +2,10 @@
 
 Simple Todos Component developed using LIT + Tailwind
 
+### Screenshot
+
+![image](https://github.com/user-attachments/assets/2db4c333-966c-49c7-a5be-4f673eb573b1)
+
 ### src/index.ts
 
 ```ts
